@@ -9,12 +9,14 @@ namespace Exec2_Game1A2B
 		{
 			InitializeComponent();
 			game = new Game1A2B();
+			label1.Text = String.Empty;
+			label2.Text = String.Empty;
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
 			game.NewGame();
-			label2.Text = game.DisplayGameSet();
+			//label2.Text = game.DisplayGameSet();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -63,7 +65,6 @@ namespace Exec2_Game1A2B
 			game.SetInput(input);
 			game.Check();
 			label1.Text = game.Result();
-			input = new int[] { 0, 0, 0, 0 };
 		}
 		private int SetNumber1()
 		{
@@ -102,23 +103,23 @@ namespace Exec2_Game1A2B
 		private int[] userinput = new int[4];
 		private int countforsame = 0;
 		private int countforposition = 0;
+		private int winningnumber = 0;
 		public void NewGame()
 		{
-			int seed = Guid.NewGuid().GetHashCode();
-			Random random = new Random(seed);
-			answer[0] = random.Next(0, 10);
+			Random rnd = new Random();
+			for (int i = 0; i < answer.Length; i++)
+			{
+				answer[i] = rnd.Next(0, 10);
 
-			seed = Guid.NewGuid().GetHashCode();
-			random = new Random(seed);
-			answer[1] = random.Next(0, 10);
-
-			seed = Guid.NewGuid().GetHashCode();
-			random = new Random(seed);
-			answer[2] = random.Next(0, 10);
-
-			seed = Guid.NewGuid().GetHashCode();
-			random = new Random(seed);
-			answer[3] = random.Next(0, 10);
+				for (int j = 0; j < i; j++)
+				{
+					while (answer[j] == answer[i])
+					{
+						j = 0;
+						answer[i] = rnd.Next(0, 10);
+					}
+				}
+			}
 		}
 		public string DisplayGameSet()
 		{
@@ -133,6 +134,8 @@ namespace Exec2_Game1A2B
 		}
 		public void Check()
 		{
+			countforposition = 0;
+			countforsame = 0;
 			for (int i = 0; i < answer.Length; i++)
 			{
 				for (int j = 0; j < answer.Length; j++)
@@ -152,7 +155,14 @@ namespace Exec2_Game1A2B
 		}
 		public string Result()
 		{
+			if (countforposition == 4) return "¼Æ¦r¥¿½T";
+
 			return $"{countforposition}A-{countforsame - countforposition}B";
+		}
+		public bool Winning()
+		{
+			if (winningnumber == 4) return true;
+			else return false;
 		}
 	}
 }
